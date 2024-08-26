@@ -9,22 +9,29 @@ def validUTF8(data):
     """
     Validate UTF-8 encoding in a given binary data.
     """
-    i = 0
-    while i < len(data):
-        byte = data[i]
-        if byte < 0x80:  # 0xxxxxxx: 1 byte
-            i += 1
-        elif byte < 0xC0:  # 110xxxxx: 2 bytes
-            return False
-        elif byte < 0xE0:  # 1110xxxx: 3 bytes
-            if i + 1 >= len(data) or data[i+1] < 0x80 or data[i+1] >= 0xC0:
+    n_bytes = 0
+
+    mask1 = 1 << 7   # 10000000
+    mask2 = 1 << 6   # 01000000
+
+    for num in data:
+        byte = num & 0xFF
+
+        if n_bytes == 0:
+            mask = 1 << 7
+            while mask & byte:
+                n_bytes += 1
+                mask >>= 1
+
+            if n_bytes == 0:
+                continue
+
+            if n_bytes == 1 or n_bytes > 4:
                 return False
-            i += 2
-        elif byte < 0xF0:  # 11110xxx: 4 bytes
-            if i + 2 >= len(data) or data[i+1] < 0x80 or data[i+1] >= 0xC0 or \
-                    data[i+2] < 0x80 or data[i+2] >= 0xC0:
-                return False
-            i += 3
         else:
-            return False
-    return True
+            if not (byte & mask1 and not (byte & mask2)):
+                return False
+
+        n_bytes -= 1
+
+    return n_bytes == 0
