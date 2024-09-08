@@ -37,7 +37,6 @@ async function main () {
   try {
     const film = await fetchFilm(url);
     const characters = film.characters;
-    console.log(characters);
 
     const characterData = await Promise.all(characters.map(fetchCharacter));
 
