@@ -1,9 +1,9 @@
-#!/usr/bin/node
+#!/usr/bin/
 const request = require('request');
 
 const movieId = process.argv[2];
 
-const url = `https://swapi.dev/api/films/${movieId}/`;
+const url = `https://swapi-api.alx-tools.com/api/films/${movieId}/`;
 
 async function fetchFilm (url) {
   return new Promise((resolve, reject) => {
@@ -37,6 +37,7 @@ async function main () {
   try {
     const film = await fetchFilm(url);
     const characters = film.characters;
+    console.log(characters);
 
     const characterData = await Promise.all(characters.map(fetchCharacter));
 
