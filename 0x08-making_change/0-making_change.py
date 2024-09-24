@@ -1,4 +1,7 @@
+#!/usr/bin/env python3
+"""Difines a module making a change"""
 def makeChange(coins, total):
+    """the make change function"""
     if total <= 0:
         return 0
     
